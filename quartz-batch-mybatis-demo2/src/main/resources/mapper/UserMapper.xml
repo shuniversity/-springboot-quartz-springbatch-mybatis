@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzj.mybatis.dao.UserDao">
+	<resultMap type="com.lzj.springbatch.model.User" id="ResultMap">
+		<result column="ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="AGE" property="age"/>
+	</resultMap>
+	
+	<select id="select" resultMap="ResultMap">
+		select * from users
+		<where>
+			<if test="id != null">ID > #{id}</if>
+		</where>
+	</select>
+</mapper>

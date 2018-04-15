@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="quartzJob" class="com.lzj.quartz.QuartzJobLauncher"></bean>
+	<!-- 注册job -->
+	<bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry"></bean>
+
+	<bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor">
+		<property name="jobRegistry" ref="jobRegistry"></property>
+	</bean>
+	
+	<bean id="jobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.lzj.quartz.QuartzJobLauncher"></property>
+		<property name="jobDataMap">
+			<map>
+				<entry key="jobName" value="myJob"></entry>
+				<entry key="jobLauncher" value-ref="jobLauncher"></entry>
+				<entry key="jobLocator" value-ref="jobRegistry"></entry>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="jobDetail"></property>
+		<property name="cronExpression" value="0/3 * * * * ?"></property>
+		<property name="startDelay" value="3000"></property>
+	</bean>
+	
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers" ref="cronTrigger"></property>
+	</bean>
+
+</beans>
